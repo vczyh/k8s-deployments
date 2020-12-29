@@ -5,7 +5,8 @@ set -e
 # Docker Hub
 # export REGISTRY_MIRROR="https://mirror.ccs.tencentyun.com"
 # export REGISTRY_MIRROR="http://f1361db2.m.daocloud.io"
-export REGISTRY_MIRROR=https://registry.cn-hangzhou.aliyuncs.com
+#export REGISTRY_MIRROR=https://registry.cn-hangzhou.aliyuncs.com
+export REGISTRY_MIRROR="https://d1zbnocg.mirror.aliyuncs.com"
 
 # 是否设置i代理
 # export proxy_address="127.0.0.1:7890"
@@ -25,5 +26,7 @@ elif [ $1 == "worker" ]; then
 else
   echo "参数错误"
 fi
+
+yum install -y wget curl htop
 
 

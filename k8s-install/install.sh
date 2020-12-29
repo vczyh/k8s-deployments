@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+#set -e
 
 # 安装最新 Docker
 yum remove docker \
@@ -70,8 +70,9 @@ systemctl enable --now kubelet
 
 # 将 SELinux 设置为 permissive 模式（相当于将其禁用）
 setenforce 0
-sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+ sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
+echo "--------------------------"
 # 一些 RHEL/CentOS 7 的用户曾经遇到过问题：由于 iptables 被绕过而导致流量无法正确路由的问题。
 # 您应该确保 在 `sysctl` 配置中的 `net.bridge.bridge-nf-call-iptables` 被设置为 1。
 cat << EOF >  /etc/sysctl.d/k8s.conf
