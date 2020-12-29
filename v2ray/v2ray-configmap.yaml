@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: v2ray-config
+data:
+  v2ray-server: |
+    {
+        "inbounds": [
+            {
+                "port": 10086, // 服务器监听端口
+                "protocol": "vmess",
+                "settings": {
+                    "clients": [
+                        {
+                            "id": "7de79878-15ad-488a-902b-86ccd210029a"
+                        }
+                    ]
+                }
+            }
+        ],
+        "outbounds": [
+            {
+                "protocol": "freedom"
+            }
+        ]
+    }
+  v2ray-client: |
+    {
+        "log": {
+            // By default, V2Ray writes access log to stdout.
+            // "access": "/path/to/access/log/file",
+            // By default, V2Ray write error log to stdout.
+            // "error": "/path/to/error/log/file",
+            // Log level, one of "debug", "info", "warning", "error", "none"
+            // "loglevel": "DEBUG",
+            // "access": "/var/log/v2ray/access.log",
+            // "error": "/var/log/v2ray/error.log"
+        },
+        "inbounds": [
+            {
+                "port": 1080, // SOCKS 代理端口，在浏览器中需配置代理并指向这个端口
+                "listen": "0.0.0.0",
+                "protocol": "http",
+                "settings": {
+                    "udp": true
+                }
+            }
+        ],
+        "outbounds": [
+            {
+                "protocol": "vmess",
+                "settings": {
+                    "vnext": [
+                        {
+                            "address": "172.18.0.3", // 服务器地址，请修改为你自己的服务器 ip 或域名
+                            "port": 10086, // 服务器端口
+                            "users": [
+                                {
+                                    "id": "7de79878-15ad-488a-902b-86ccd210029a"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "protocol": "freedom",
+                "tag": "direct"
+            }
+        ],
+        "routing": {
+            "domainStrategy": "IPOnDemand",
+            "rules": [
+                {
+                    "type": "field",
+                    "ip": [
+                        "geoip:private"
+                    ],
+                    "outboundTag": "direct"
+                }
+            ]
+        }
+    }
