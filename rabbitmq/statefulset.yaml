@@ -15,7 +15,7 @@ spec:
       name: rabbitmq-data
       namespace: test-rabbitmq
     spec:
-      storageClassName: "nfs-client"
+      storageClassName: "managed-nfs-storage" # nfs storage class name
       accessModes:
       - ReadWriteOnce
       resources:
@@ -116,6 +116,9 @@ spec:
           protocol: TCP
         - name: epmd
           containerPort: 4369
+          protocol: TCP
+        - name: cluster-rpc
+          containerPort: 25672
           protocol: TCP
         livenessProbe:
           exec:

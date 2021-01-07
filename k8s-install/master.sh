@@ -9,10 +9,10 @@ echo "安装master"
 # init
 if [ ! -n "$proxy_address" ]; then
   echo "pull k8s images from ali and init"
-  kubeadm init --pod-network-cidr=192.168.0.0/16 --image-repository=registry.aliyuncs.com/k8sxio
+  kubeadm init --pod-network-cidr=192.168.0.0/16 --image-repository=registry.aliyuncs.com/k8sxio --kubernetes-version=${k8s_version}
 else
   echo "pull k8s images from google and init"
-  kubeadm init --pod-network-cidr=192.168.0.0/16
+  kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version=${k8s_version}
 fi
 
 # 设置config

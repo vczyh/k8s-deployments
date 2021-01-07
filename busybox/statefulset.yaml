@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: test
+  namespace: test-rabbitmq
+spec:
+  selector:
+    matchLabels:
+      app: test
+  serviceName: test-headless
+  replicas: 2
+  template:
+    metadata:
+      name: test
+      namespace: test-rabbitmq
+      labels:
+        app: test
+    spec:
+      serviceAccount: rabbitmq
+      containers:
+        - name: test
+          image: busybox:1.28
+          imagePullPolicy: IfNotPresent
+          args:
+            - sleep
+            - "3600"
+      restartPolicy: Always

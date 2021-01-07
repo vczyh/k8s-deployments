@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  labels:
+    app: prometheus
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: prometheus
+      labels:
+        app: prometheus
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+            - name: prometheus-data
+              mountPath: /prometheus-data
+            - name: prometheus-config
+              mountPath: /etc/prometheus
+            - name: time
+              mountPath: /etc/localtime
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+        - name: prometheus-data
+          emptyDir: { }
+        - name: prometheus-config
+          configMap:
+            name: prometheus-config
+        - name: time
+          hostPath:
+            path: /etc/localtime
+  selector:
+    matchLabels:
+      app: prometheus

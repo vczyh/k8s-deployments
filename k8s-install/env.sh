@@ -11,6 +11,9 @@ export REGISTRY_MIRROR="https://d1zbnocg.mirror.aliyuncs.com"
 # 是否设置i代理
 # export proxy_address="127.0.0.1:7890"
 
+export k8s_version=1.19.6
+export docker_version=19.03.9
+
 if [ ! -n "$proxy_address" ]; then
   echo "no proxy"
 else
@@ -26,7 +29,5 @@ elif [ $1 == "worker" ]; then
 else
   echo "参数错误"
 fi
-
-yum install -y wget curl htop
 
 

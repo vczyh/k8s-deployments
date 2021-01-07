@@ -2,6 +2,9 @@
 
 #set -e
 
+# 常用工具
+yum install -y wget curl htop net-tools vim nfs-utils
+
 # 安装最新 Docker
 yum remove docker \
 	docker-client \
@@ -19,7 +22,7 @@ else
   echo "添加 官方 docker yum repo"
   yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 fi
-yum install -y docker-ce docker-ce-cli containerd.io
+yum install -y docker-ce-${docker_version} docker-ce-cli-${docker_version} containerd.io
 
 # 设置 Cgroup 驱动程序
 mkdir -p /etc/docker
@@ -51,7 +54,7 @@ gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
 EOF
-  yum install -y --nogpgcheck kubelet kubeadm kubectl
+  yum install -y --nogpgcheck kubelet-${k8s_version} kubeadm-${k8s_version} kubectl-${k8s_version}
 else
   echo "添加 官方 k8s yum repo"
   cat << EOF > /etc/yum.repos.d/kubernetes.repo
@@ -63,19 +66,20 @@ gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
-  yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+  yum install -y kubelet-${k8s_version} kubeadm-${k8s_version} kubectl-${k8s_version} --disableexcludes=kubernetes
 fi
 
 systemctl enable --now kubelet
 
 # 将 SELinux 设置为 permissive 模式（相当于将其禁用）
 setenforce 0
- sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
 echo "--------------------------"
 # 一些 RHEL/CentOS 7 的用户曾经遇到过问题：由于 iptables 被绕过而导致流量无法正确路由的问题。
 # 您应该确保 在 `sysctl` 配置中的 `net.bridge.bridge-nf-call-iptables` 被设置为 1。
 cat << EOF >  /etc/sysctl.d/k8s.conf
+net.ipv4.ip_forward = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 EOF
