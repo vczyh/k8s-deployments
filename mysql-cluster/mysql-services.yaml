@@ -28,4 +28,4 @@ spec:
       nodePort: 3306
   selector:
     app: mysql
-type: NodePort
+  type: NodePort
