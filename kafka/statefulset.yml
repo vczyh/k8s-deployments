@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: dts
+  name: kafka
+  labels:
+    app: kafka
+spec:
+  selector:
+    matchLabels:
+      app: kafka
+  serviceName: kafka-headless
+  replicas: 3
+  template:
+    metadata:
+      name: kafka
+      labels:
+        app: kafka
+    spec:
+      initContainers:
+       - name: init-kafka
+         image: ccr.ccs.tencentyun.com/zhangpublib/kafka:3.2.1
+         imagePullPolicy: Always
+         command: ["/bin/bash"]
+         args:
+         - "-c"
+         - |
+           set -ex
+           # 基于 Pod 序号生成 Kafka Node ID。
+           [[ `hostname` =~ -([0-9]+)$ ]] || exit 1
+           ordinal=${BASH_REMATCH[1]}
+           echo `expr $ordinal + 1` > /tmp/shared/node_id.txt
+         volumeMounts:
+         - name: shared-data
+           mountPath: /tmp/shared
+
+      containers:
+      - name: kafka
+        image: ccr.ccs.tencentyun.com/zhangpublib/kafka:3.2.1
+        imagePullPolicy: Always
+        env:
+        - name: CLUSTER_ID
+          value: 9dJzdGvfTPaCY4e8klXaDQ
+        - name: NODE_ID_COMMAND
+          value: "cat /tmp/shared/node_id.txt"
+        - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+          value: 1@kafka-0.kafka-headless.dts.svc.cluster.local:9093,2@kafka-1.kafka-headless.dts.svc.cluster.local:9093,3@kafka-2.kafka-headless.dts.svc.cluster.local:9093
+        ports:
+          - containerPort: 9093
+            name: controller
+          - containerPort: 9092
+            name: broker
+        volumeMounts:
+          - name: shared-data
+            mountPath: /tmp/shared
+      restartPolicy: Always
+
+      volumes:
+        - name: shared-data
+          emptyDir: {}

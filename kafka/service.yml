@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dts
+  name: kafka-headless
+spec:
+  selector:
+    app: kafka
+  ports:
+    - port: 9093
+      name: controller
+      targetPort: 9093
+    - port: 9092
+      name: broker
+      targetPort: 9092
+  clusterIP: None
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dts
+  name: kafka
+spec:
+  selector:
+    app: kafka
+  ports:
+    - port: 9092
+      name: broker
+      targetPort: 9092
+  type: NodePort
