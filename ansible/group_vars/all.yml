@@ -1,0 +1,5 @@
+timezone: Asia/Shanghai
+proxy:
+  system:
+    http_proxy: http://10.0.7.200:7890
+    https_proxy: http://10.0.7.200:7890

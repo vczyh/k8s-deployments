@@ -45,6 +45,8 @@ spec:
           value: "cat /tmp/shared/node_id.txt"
         - name: KAFKA_CONTROLLER_QUORUM_VOTERS
           value: 1@kafka-0.kafka-headless.dts.svc.cluster.local:9093,2@kafka-1.kafka-headless.dts.svc.cluster.local:9093,3@kafka-2.kafka-headless.dts.svc.cluster.local:9093
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: PLAINTEXT:\/\/:9092
         ports:
           - containerPort: 9093
             name: controller

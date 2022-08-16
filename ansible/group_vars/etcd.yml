@@ -1,0 +1,2 @@
+#ansible_user: root
+#ansibleprivate_key_file: /Users/zhangyuheng/.ssh/id_rsa.unicloud

@@ -1,0 +1,12 @@
+all:
+  ansible_user: root
+  ansibleprivate_key_file: /Users/zhangyuheng/.ssh/id_rsa.unicloud
+  children:
+    etcd:
+      hosts:
+        etcd-01:
+          ansible_host: 10.0.44.54
+        etcd-02:
+          ansible_host: 10.0.44.33
+        etcd-03:
+          ansible_host: 10.0.44.34

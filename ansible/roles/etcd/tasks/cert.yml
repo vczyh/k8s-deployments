@@ -1,0 +1,8 @@
+---
+- name: create etcd ssl temp directory
+  file:
+    path: '{{ etcd.temp_dir }}/etcd-ssl'
+    state: directory
+    recurse: yes
+
+- name:

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: v2ray-config
+data:
+  v2ray-server: |
+  {
+      "log": {
+          "loglevel": "warning"
+      },
+      "inbounds": [
+          {
+              "port": 10086,
+              "protocol": "vmess",
+              "settings": {
+                  "clients": [
+                      {
+                          "id": "ac50940d-a1f7-43b4-9ab7-5d41edea695d"
+                      }
+                  ]
+              }
+          }
+      ],
+      "outbounds": [
+          {
+              "protocol": "freedom"
+          }
+      ]
+  }

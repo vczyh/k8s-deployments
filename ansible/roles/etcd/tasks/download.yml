@@ -1,0 +1,54 @@
+---
+- name: Create etcd temp directory
+  file:
+    path: '{{ etcd.temp_dir }}'
+    state: directory
+    recurse: yes
+
+- name: Check etcd release exists
+  stat:
+    path: '{{ etcd.temp_dir }}/etcd-{{ etcd.version }}-linux-amd64.tar.gz'
+  register: etcd_archive
+  run_once: true
+  delegate_to: "{{ groups['etcd'][0] }}"
+
+- name: Download etcd release on the first server of etcd group
+  get_url:
+    url: '{{ etcd.download_url }}/{{ etcd.version }}/etcd-{{ etcd.version }}-linux-amd64.tar.gz'
+    dest: '{{ etcd.temp_dir }}'
+    validate_certs: no
+    timeout: 20
+  register: etcd_download
+  run_once: true
+  delegate_to: "{{ groups['etcd'][0] }}"
+  environment: '{{ proxy.system }}'
+  when: not etcd_archive.stat.exists
+
+- name: Extract etcd files
+  unarchive:
+    src: '{{ etcd_download.dest }}'
+    dest: '{{ etcd.temp_dir }}'
+    remote_src: true
+  run_once: true
+  delegate_to: "{{ groups['etcd'][0] }}"
+
+- name: Fetch etcd binary from first server
+  fetch:
+    src: '{{ etcd.temp_dir }}/etcd-{{ etcd.version }}-linux-amd64/{{ item }}'
+    dest: tmp/etcd/{{ item }}
+    flat: yes
+  register: fetch_etcd
+  run_once: true
+  delegate_to: "{{ groups['etcd'][0] }}"
+  loop:
+    - etcd
+    - etcdctl
+
+- name: Copy etcd binary to all servers
+  copy:
+    src: tmp/etcd/{{ item }}
+    dest: '{{ etcd.bin_path }}'
+    mode: 0755
+  loop:
+    - etcd
+    - etcdctl

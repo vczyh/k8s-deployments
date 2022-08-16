@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: dts
+  name: debezium-connect
+  labels:
+    app: debezium-connect
+spec:
+  selector:
+    matchLabels:
+      app: debezium-connect
+  replicas: 1
+  template:
+    metadata:
+      name: debezium-connect
+      labels:
+        app: debezium-connect
+    spec:
+      containers:
+      - name: debezium-connect
+        image: debezium/connect:1.9
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: BOOTSTRAP_SERVERS
+#          value: kafka.dts.svc.cluster.local:9092
+          value: kafka-0.kafka-headless.dts.svc.cluster.local:9092,kafka-1.kafka-headless.dts.svc.cluster.local:9092,kafka-2.kafka-headless.dts.svc.cluster.local:9092
+        - name: GROUP_ID
+          value: "1"
+        - name: CONFIG_STORAGE_TOPIC
+          value: my_connect_configs
+        - name: OFFSET_STORAGE_TOPIC
+          value: my_connect_offsets
+        - name: STATUS_STORAGE_TOPIC
+          value: my_connect_statuses
+        ports:
+          - containerPort: 8083
+            name: rest
+      restartPolicy: Always

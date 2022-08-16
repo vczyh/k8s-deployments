@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: dts
+  name: kafka-ui
+  labels:
+    app: kafka-ui
+spec:
+  selector:
+    matchLabels:
+      app: kafka-ui
+  replicas: 1
+  template:
+    metadata:
+      name: kafka-ui
+      labels:
+        app: kafka-ui
+    spec:
+      containers:
+      - name: kafka-ui
+        image: ccr.ccs.tencentyun.com/zhangsync/vectorized-console:master-173596f
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KAFKA_BROKERS
+#          value: kafka.dts.svc.cluster.local:9092
+          value: kafka-0.kafka-headless.dts.svc.cluster.local:9092,kafka-1.kafka-headless.dts.svc.cluster.local:9092,kafka-2.kafka-headless.dts.svc.cluster.local:9092
+        ports:
+          - containerPort: 8080
+            name: rest
+      restartPolicy: Always

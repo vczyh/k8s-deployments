@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: dts
+  name: debezium-mysql57
+  labels:
+    app: debezium-mysql57
+spec:
+  selector:
+    matchLabels:
+      app: debezium-mysql57
+  replicas: 1
+  template:
+    metadata:
+      name: debezium-mysql57
+      labels:
+        app: debezium-mysql57
+    spec:
+      containers:
+        - name: debezium-mysql57
+          image: mysql:5.7.32
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "123"
+          ports:
+            - containerPort: 3306
+              name: mysql
+      restartPolicy: Always

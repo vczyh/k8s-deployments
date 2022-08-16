@@ -1,0 +1,10 @@
+---
+etcd:
+  version: v3.5.0
+  download_url: https://github.com/etcd-io/etcd/releases/download
+  temp_dir: /tmp/etcd
+  user: etcd
+  group: etcd
+  home_path: /opt/etcd
+  bin_path: /opt/etcd/bin
+  data_dir: /opt/etcd/data

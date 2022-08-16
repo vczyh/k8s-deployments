@@ -1,0 +1,8 @@
+---
+- import_tasks: time.yml
+  tags:
+    - deploy
+
+- import_tasks: firewall.yml
+  tags:
+    - deploy

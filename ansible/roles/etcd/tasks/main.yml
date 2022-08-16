@@ -1,0 +1,12 @@
+---
+- name: create user
+  import_tasks: user.yml
+  tags:
+    - user
+    - deploy
+
+- name: download and unarchive etcd
+  import_tasks: download.yml
+  tags:
+    - install
+    - deploy

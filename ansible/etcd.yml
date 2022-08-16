@@ -1,0 +1,5 @@
+---
+- name: ETCD
+  hosts: etcd
+  roles:
+    - role: etcd
